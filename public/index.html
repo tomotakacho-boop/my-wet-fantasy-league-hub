@@ -31,19 +31,19 @@
       <section class="view is-active" data-view-panel="overview">
         <div class="page-shell">
           <div class="page-heading">
-            <div><p class="eyebrow">League command center</p><h1 class="compact-title">Everything that matters this week.</h1><p class="lede">Standings, matchups, and league activity will sync from ESPN.</p></div>
+            <div><h1 class="compact-title">Overview</h1><p class="lede">Standings, matchups, and league activity.</p></div>
             <div class="sync-block"><span class="status-dot is-offline" id="espn-status-dot"></span><span><strong id="espn-status">Connecting to ESPN</strong><small id="espn-updated">Loading league data</small></span></div>
           </div>
 
           <div class="overview-grid">
             <article class="panel standings-panel">
-              <div class="panel-heading"><div><p class="eyebrow">The table</p><h2>League standings</h2></div><span class="quiet-chip">14 teams · one division</span></div>
+              <div class="panel-heading"><div><h2>League standings</h2></div><span class="quiet-chip">14 teams · one division</span></div>
               <section class="division single-division"><div class="standings-head"><span>RK</span><span>TEAM</span><span>W–L–T</span><span>PF</span></div><div id="league-standings"></div></section>
             </article>
 
             <aside class="overview-side">
               <article class="panel prize-card"><p class="eyebrow">Prize pool</p><div class="prize-total">$2,100</div><div class="prize-line"><span>Champion</span><strong>$1,400</strong></div><div class="prize-line"><span>Runner-up</span><strong>$450</strong></div><div class="prize-line"><span>Third</span><strong>$250</strong></div></article>
-              <article class="panel slate-card"><div class="panel-heading compact"><div><p class="eyebrow">Head to head</p><h2>Week 1 slate</h2></div><span class="quiet-chip">ESPN</span></div><div id="matchup-list"></div></article>
+              <article class="panel slate-card"><div class="panel-heading compact"><div><h2>Week 1 matchups</h2></div><span class="quiet-chip">ESPN</span></div><div id="matchup-list"></div></article>
             </aside>
           </div>
 
@@ -57,15 +57,15 @@
 
       <section class="view" data-view-panel="power">
         <div class="page-shell power-shell">
-          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><p class="eyebrow eyebrow-light">Projected scoring issue</p><h1>Projected points, not an abstract grade.</h1><p>Every ranking starts with ESPN’s projected score for the best legal lineup. The ± figure is the model’s expected week-to-week volatility.</p><div class="issue-stamp"><small>LEAGUE AVG</small><strong id="projected-league-average">—</strong><span>PROJECTED POINTS</span></div></header>
-          <div class="section-heading"><div><p class="eyebrow">The fourteen</p><h2>Week 0 power rankings</h2></div><span>Scores update when ESPN projections change.</span></div>
+          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><h1>Power rankings</h1><p>Rankings use ESPN’s projected score for each team’s best legal lineup. The ± figure shows expected week-to-week volatility.</p><div class="issue-stamp"><small>LEAGUE AVG</small><strong id="projected-league-average">—</strong><span>PROJECTED POINTS</span></div></header>
+          <div class="section-heading"><div><h2>Week 0 rankings</h2></div><span>Scores update when ESPN projections change.</span></div>
           <div class="ranking-list" id="ranking-list"></div>
         </div>
       </section>
 
       <section class="view" data-view-panel="methods">
         <div class="page-shell methods-shell">
-          <div class="page-heading"><div><p class="eyebrow">Model notes</p><h1>How the rankings work.</h1><p class="lede">Week 0 is a forward-looking roster score. Weekly performance joins the model after games are played.</p></div></div>
+          <div class="page-heading"><div><h1>Methodology</h1><p class="lede">Week 0 uses projected roster strength. Weekly performance is added after games are played.</p></div></div>
           <div class="method-grid">
             <article class="panel method-card"><span>01</span><h2>55% · Starting lineup</h2><p>The highest projected legal Week 1 lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. This is the forecast’s primary input.</p></article>
             <article class="panel method-card"><span>02</span><h2>25% · Star power</h2><p>The top three projected RB, WR, and TE players raise a team’s ceiling and receive more influence than interchangeable bench depth.</p></article>
@@ -81,7 +81,7 @@
       <section class="view feed-view" data-view-panel="feed">
         <div class="feed-layout">
           <aside class="channel-rail"><div class="server-mark">MW</div><p>MY WET FANTASY</p><button class="channel is-active" data-channel="league-feed"># league-feed</button><button class="channel" data-channel="trade-talk"># trade-talk</button><button class="channel" data-channel="memes"># memes</button><div class="league-pills"><span>14 teams</span><span>ESPN</span></div></aside>
-          <section class="feed-main"><header class="channel-header"><strong id="channel-name"># league-feed</strong><span id="channel-description">League conversation, matchup talk, and announcements.</span></header><div class="message-area" id="message-area"><div class="feed-welcome"><span>#</span><h1>Welcome to the league feed.</h1><p>Sign in with Google to post, react, reply, and share images.</p></div></div><form class="composer" id="message-form" aria-label="Message composer"><button type="button" id="upload-button" aria-label="Add image">＋</button><input id="message-input" autocomplete="off" placeholder="Sign in to send a message" disabled /><input id="media-input" type="file" accept="image/*" hidden /><button type="button" id="gif-button" aria-label="Add GIF">GIF</button><button type="submit" id="send-button" disabled>Send</button></form><div class="reply-banner" id="reply-banner" hidden></div></section>
+          <section class="feed-main"><header class="channel-header"><strong id="channel-name"># league-feed</strong><span id="channel-description">League conversation, matchup talk, and announcements.</span></header><div class="message-area" id="message-area"><div class="feed-welcome"><span>#</span><h1>#league-feed</h1><p>Sign in with Google to post, react, reply, and share images.</p></div></div><form class="composer" id="message-form" aria-label="Message composer"><button type="button" id="upload-button" aria-label="Add image">＋</button><input id="message-input" autocomplete="off" placeholder="Sign in to send a message" disabled /><input id="media-input" type="file" accept="image/*" hidden /><button type="button" id="gif-button" aria-label="Add GIF">GIF</button><button type="submit" id="send-button" disabled>Send</button></form><div class="reply-banner" id="reply-banner" hidden></div></section>
           <aside class="member-rail"><p>LEAGUE MEMBERS</p><div id="member-list"></div></aside>
         </div>
       </section>
@@ -90,9 +90,9 @@
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <div class="modal-backdrop" id="tool-modal" hidden><div class="tool-modal"><button class="modal-close" id="modal-close" type="button">×</button><p class="eyebrow" id="modal-kicker">TRADE BLOCK</p><h2 id="modal-title">Put a player on the block</h2><div id="modal-content"></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/app.js?v=3"></script>
+    <script src="/app.js?v=4"></script>
     <script src="/rankings-v2.js?v=1"></script>
-    <script src="/tools.js?v=2"></script>
+    <script src="/tools.js?v=3"></script>
     <script src="/social.js?v=4"></script>
   </body>
 </html>
