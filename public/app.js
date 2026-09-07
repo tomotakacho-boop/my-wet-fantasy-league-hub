@@ -1,7 +1,19 @@
-const pendingTeams = Array.from({ length: 12 }, (_, index) => ({
-  id: index + 1,
-  name: `Team ${String(index + 1).padStart(2, "0")}`,
-}));
+const leagueTeams = [
+  { id: 1, name: "Child's Play (LIAN)", owner: "Charles Lian" },
+  { id: 2, name: "Unc Central (BOX)", owner: "Shaurya Baxi" },
+  { id: 3, name: "Crooklyn L Train (NoLM)", owner: "Shrikar Kundur" },
+  { id: 4, name: "AI-YAI-YUK WE'RE WORTH(Y)LESS (UI4L)", owner: "Kevin Wong" },
+  { id: 5, name: "Bunda Bandits (BLÜD)", owner: "Vikram Ashok" },
+  { id: 6, name: "Staten Island Dumptruck (SID)", owner: "Nikhil Glese" },
+  { id: 7, name: "Cooking Lamb In Packerstan 🥾 (MOSS)", owner: "Randy Lai" },
+  { id: 8, name: "🅱️ASTARD ✓", owner: "Gyan Kandhari" },
+  { id: 9, name: "New York Squib Cakes (SAm)", owner: "Sameer Goyal" },
+  { id: 10, name: "Lowry's Dumpy (THIC)", owner: "Soham Kamat" },
+  { id: 11, name: "Mala Party (MRTY)", owner: "Sahisnu Malapati" },
+  { id: 12, name: "McConkey Kong (AM)", owner: "Andrew Magee" },
+  { id: 13, name: "Nactuaa spit on that thang (ULOS)", owner: "Phil Tereshenko" },
+  { id: 14, name: "Cho Consulting Group", owner: "Tomotaka Cho" },
+];
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -10,19 +22,18 @@ function teamRows(teams) {
   return teams.map((team, index) => `
     <div class="standing-row">
       <span>${index + 1}</span>
-      <div class="team-cell"><i>${String(team.id).padStart(2, "0")}</i><span><strong>${team.name}</strong><small>Owner pending</small></span></div>
+      <div class="team-cell"><i>${team.name.split(/\s+/).map((word) => word[0]).join("").replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</i><span><strong>${team.name}</strong><small>${team.owner}</small></span></div>
       <span>0–0–0</span><span>0.0</span>
     </div>`).join("");
 }
 
 function renderTemplateData() {
-  $("#division-one").innerHTML = teamRows(pendingTeams.slice(0, 6));
-  $("#division-two").innerHTML = teamRows(pendingTeams.slice(6));
-  $("#matchup-list").innerHTML = Array.from({ length: 6 }, (_, index) => `
-    <div class="matchup"><span>${pendingTeams[index].name}</span><span>VS</span><span>${pendingTeams[11 - index].name}</span></div>`).join("");
-  $("#ranking-list").innerHTML = pendingTeams.map((team, index) => `
-    <article class="ranking-card"><div class="rank-number">${index + 1}</div><div class="rank-copy"><small>TEAM AND RECORD PENDING</small><h3>${team.name}</h3><p>Weekly power-ranking analysis will appear here.</p></div><div class="rank-score">—</div></article>`).join("");
-  $("#member-list").innerHTML = pendingTeams.map((team) => `<div class="member"><i>${String(team.id).padStart(2, "0")}</i><span><strong>${team.name}</strong><small>Owner pending</small></span></div>`).join("");
+  $("#league-standings").innerHTML = teamRows(leagueTeams);
+  $("#matchup-list").innerHTML = Array.from({ length: 7 }, (_, index) => `
+    <div class="matchup"><span>${leagueTeams[index].name}</span><span>VS</span><span>${leagueTeams[13 - index].name}</span></div>`).join("");
+  $("#ranking-list").innerHTML = leagueTeams.map((team, index) => `
+    <article class="ranking-card"><div class="rank-number">${index + 1}</div><div class="rank-copy"><small>PRESEASON · ${team.owner}</small><h3>${team.name}</h3><p>Weekly power-ranking analysis will appear here after the ESPN roster sync.</p></div><div class="rank-score">—</div></article>`).join("");
+  $("#member-list").innerHTML = leagueTeams.map((team) => `<div class="member"><i>${team.name.split(/\s+/).map((word) => word[0]).join("").replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</i><span><strong>${team.name}</strong><small>${team.owner}</small></span></div>`).join("");
 }
 
 function switchView(view, updateHash = true) {
