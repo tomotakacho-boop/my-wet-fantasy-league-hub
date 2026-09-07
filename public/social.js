@@ -13,8 +13,12 @@
   const CATEGORIES = [["smileys","😀"],["people","🫶"],["animals","🐶"],["food","🍎"],["activity","🏈"],["travel","🚗"],["objects","💡"],["symbols","❤️"]];
   const messageArea = document.querySelector("#message-area");
   const rankingList = document.querySelector("#ranking-list");
-  const displayName = () => user?.user_metadata?.full_name || user?.email?.split("@")[0] || "League member";
-  const avatarUrl = () => user?.user_metadata?.avatar_url || null;
+  const displayName = () => chatDisplayName();
+  const avatarUrl = () => chatAvatarUrl();
+  const socialProfile = userId => memberProfile(userId);
+  const socialName = row => socialProfile(row.user_id)?.display_name || row.author_name || row.display_name || "League member";
+  const socialAvatar = row => socialProfile(row.user_id)?.avatar_url || null;
+  const avatarMarkup = row => socialAvatar(row) ? `<img src="${esc(socialAvatar(row))}" alt="">` : initials(socialName(row));
   const time = value => new Date(value).toLocaleString([], { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
   let messageRows = [], messageReactions = [], activeMessageReply = null, activeMessagePicker = null, expandedMessagePicker = null;
   let rankingTeams = [], powerComments = [], powerReactions = [], activePowerReply = null, activePowerPicker = null, expandedPowerPicker = null, powerLoaded = false;
@@ -25,7 +29,7 @@
   }
 
   function attribution(rows) {
-    const names = [...new Set(rows.map(row => row.display_name || row.author_name || "League member"))];
+    const names = [...new Set(rows.map(socialName))];
     return names.length <= 3 ? names.join(", ") : `${names.slice(0, 2).join(", ")} + ${names.length - 2} others`;
   }
 
@@ -44,7 +48,7 @@
   function threadMarkup(parentId) {
     const replies = messageRows.filter(row => row.parent_id === parentId);
     if (!replies.length) return "";
-    return `<div class="message-thread">${replies.map(reply => `<div class="thread-reply"><span class="thread-avatar">${initials(reply.author_name)}</span><div><strong>${esc(reply.author_name)}</strong><time>${time(reply.created_at)}</time><p>${esc(reply.content || "")}</p>${reply.media_url ? `<img class="message-media" src="${esc(reply.media_url)}" alt="Shared reply media">` : ""}</div></div>`).join("")}</div>`;
+    return `<div class="message-thread">${replies.map(reply => `<div class="thread-reply"><span class="thread-avatar">${avatarMarkup(reply)}</span><div><strong>${esc(socialName(reply))}</strong><time>${time(reply.created_at)}</time><p>${esc(reply.content || "")}</p>${reply.media_url ? `<img class="message-media" src="${esc(reply.media_url)}" alt="Shared reply media">` : ""}</div></div>`).join("")}</div>`;
   }
 
   function messageMarkup(message) {
@@ -53,14 +57,14 @@
     const pickerOpen = activeMessagePicker === message.id;
     const replyOpen = activeMessageReply === message.id;
     return `<article class="feed-message" data-message-card="${message.id}">
-      <div class="avatar-placeholder">${initials(message.author_name)}</div>
-      <div class="message-body"><div><strong>${esc(message.author_name)}</strong><time>${time(message.created_at)}</time></div><p>${esc(message.content || "")}</p>${message.media_url ? `<img class="message-media" src="${esc(message.media_url)}" alt="Shared media">` : ""}
+      <div class="avatar-placeholder">${avatarMarkup(message)}</div>
+      <div class="message-body"><div><strong>${esc(socialName(message))}</strong><time>${time(message.created_at)}</time></div><p>${esc(message.content || "")}</p>${message.media_url ? `<img class="message-media" src="${esc(message.media_url)}" alt="Shared media">` : ""}
         ${buttons ? `<div class="reaction-row">${buttons}</div>` : ""}
         <div class="message-hover-actions"><button type="button" data-add-message-reaction="${message.id}" aria-label="Add reaction"><span class="reaction-face">☺</span><span class="reaction-plus">+</span></button><button type="button" data-reply-message="${message.id}" aria-label="Reply">↩</button></div>
         ${pickerOpen ? `<div class="reaction-picker" role="group" aria-label="Choose a reaction">${EMOJIS.map(emoji => `<button type="button" data-message-id="${message.id}" data-message-reaction="${emoji}" aria-label="React ${emoji}">${emoji}</button>`).join("")}<button type="button" data-open-message-browser="${message.id}" class="emoji-more" aria-label="More emojis">›</button><button type="button" data-close-message-picker aria-label="Close">×</button></div>` : ""}
         ${expandedMessagePicker === message.id ? emojiBrowser("message", message.id) : ""}
         ${threadMarkup(message.id)}
-        ${replyOpen ? `<form class="inline-reply-form" data-message-reply-form="${message.id}"><input maxlength="500" placeholder="Reply to ${esc(message.author_name)}" aria-label="Reply to ${esc(message.author_name)}" required><button type="submit">Reply</button><button type="button" data-cancel-message-reply>Cancel</button></form>` : ""}
+        ${replyOpen ? `<form class="inline-reply-form" data-message-reply-form="${message.id}"><input maxlength="500" placeholder="Reply to ${esc(socialName(message))}" aria-label="Reply to ${esc(socialName(message))}" required><button type="submit">Reply</button><button type="button" data-cancel-message-reply>Cancel</button></form>` : ""}
       </div></article>`;
   }
 
@@ -78,6 +82,7 @@
     const ids = result.data.map(message => message.id);
     let reactions = [];
     if (ids.length) reactions = (await db.from("message_reactions").select("message_id,user_id,emoji,display_name").in("message_id", ids)).data || [];
+    await loadMemberProfiles([...result.data.map(message => message.user_id), ...reactions.map(reaction => reaction.user_id)]);
     renderMessages(result.data, reactions);
   };
 
@@ -165,7 +170,7 @@
     if (commentsResult.error || reactionsResult.error) {
       powerLoaded = false;
       if (!silent) toast("Run the updated Supabase setup to enable ranking reactions and replies.");
-    } else { powerComments = commentsResult.data || []; powerReactions = reactionsResult.data || []; powerLoaded = true; }
+    } else { powerComments = commentsResult.data || []; powerReactions = reactionsResult.data || [];await loadMemberProfiles([...powerComments.map(comment=>comment.user_id),...powerReactions.map(reaction=>reaction.user_id)]);powerLoaded = true; }
     renderRankings(rankingTeams);
   }
 

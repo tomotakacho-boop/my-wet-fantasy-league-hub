@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=7" />
+    <link rel="stylesheet" href="/styles.css?v=8" />
   </head>
   <body>
     <header class="site-header">
@@ -81,7 +81,7 @@
       <section class="view feed-view" data-view-panel="feed">
         <div class="feed-layout">
           <aside class="channel-rail"><div class="server-mark">MW</div><p>MY WET FANTASY</p><button class="channel is-active" data-channel="league-feed"># league-feed</button><button class="channel" data-channel="trade-talk"># trade-talk</button><button class="channel" data-channel="memes"># memes</button><div class="league-pills"><span>14 teams</span><span>ESPN</span></div></aside>
-          <section class="feed-main"><header class="channel-header"><strong id="channel-name"># league-feed</strong><span id="channel-description">League conversation, matchup talk, and announcements.</span></header><div class="message-area" id="message-area"><div class="feed-welcome"><span>#</span><h1>#league-feed</h1><p>Sign in with Google to post, react, reply, and share images.</p></div></div><form class="composer" id="message-form" aria-label="Message composer"><button type="button" id="upload-button" aria-label="Add image">＋</button><input id="message-input" autocomplete="off" placeholder="Sign in to send a message" disabled /><input id="media-input" type="file" accept="image/*" hidden /><button type="button" id="gif-button" aria-label="Add GIF">GIF</button><button type="submit" id="send-button" disabled>Send</button></form><div class="reply-banner" id="reply-banner" hidden></div></section>
+          <section class="feed-main"><header class="channel-header"><strong id="channel-name"># league-feed</strong><span id="channel-description">League conversation, matchup talk, and announcements.</span><div class="feed-profile-actions"><button type="button" id="change-display-name" disabled>Change display name</button><button type="button" id="change-profile-picture" disabled>Change profile picture</button><input id="profile-picture-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden></div></header><div class="message-area" id="message-area"><div class="feed-welcome"><span>#</span><h1>#league-feed</h1><p>Sign in with Google to post, react, reply, and share images.</p></div></div><form class="composer" id="message-form" aria-label="Message composer"><button type="button" id="upload-button" aria-label="Add image">＋</button><input id="message-input" autocomplete="off" placeholder="Sign in to send a message" disabled /><input id="media-input" type="file" accept="image/*" hidden /><button type="button" id="gif-button" aria-label="Add GIF">GIF</button><button type="submit" id="send-button" disabled>Send</button></form><div class="reply-banner" id="reply-banner" hidden></div></section>
           <aside class="member-rail"><p>LEAGUE MEMBERS</p><div id="member-list"></div></aside>
         </div>
       </section>
@@ -90,9 +90,9 @@
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <div class="modal-backdrop" id="tool-modal" hidden><div class="tool-modal"><button class="modal-close" id="modal-close" type="button">×</button><p class="eyebrow" id="modal-kicker">TRADE BLOCK</p><h2 id="modal-title">Put a player on the block</h2><div id="modal-content"></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/app.js?v=4"></script>
+    <script src="/app.js?v=5"></script>
     <script src="/rankings-v2.js?v=1"></script>
-    <script src="/tools.js?v=3"></script>
-    <script src="/social.js?v=4"></script>
+    <script src="/tools.js?v=4"></script>
+    <script src="/social.js?v=5"></script>
   </body>
 </html>
