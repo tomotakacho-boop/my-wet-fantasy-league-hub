@@ -12,6 +12,11 @@
   to = "/.netlify/functions/public-config"
   status = 200
 
+[[redirects]]
+  from = "/api/giphy-search"
+  to = "/.netlify/functions/giphy-search"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
