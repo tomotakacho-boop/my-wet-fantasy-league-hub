@@ -93,6 +93,8 @@ h2 { margin-bottom:0; font:650 27px/1.12 var(--serif); letter-spacing:-.02em; }
 .rank-score { display:grid; place-content:center; gap:4px; border-left:1px solid var(--line); color:var(--ink); text-align:center; }
 .rank-score strong { font:650 30px var(--serif); }
 .rank-score small { color:#9198a5; font-size:8px; font-weight:800; letter-spacing:.08em; }
+.rank-score em { margin-top:8px; color:#687286; font-size:14px; font-style:normal; font-weight:800; }
+.factor-tags span { font-weight:700; }
 .player-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:13px; }
 .player-tags span { padding:5px 7px; border-radius:4px; color:#687286; background:#f0eee8; font-size:10px; }
 .player-tags b { color:#b88216; }

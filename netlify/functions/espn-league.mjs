@@ -15,6 +15,7 @@ export const handler = async () => {
     const response = await fetch(url, { headers: { accept: "application/json" } });
     if (!response.ok) return { statusCode: response.status, body: JSON.stringify({ error: "ESPN league request failed" }) };
     const raw = await response.json();
+    const currentMatchupPeriod = raw.status?.currentMatchupPeriod || 1;
     const members = new Map((raw.members || []).map((member) => [member.id, [member.firstName, member.lastName].filter(Boolean).join(" ").replace(/\s+/g, " ").trim() || member.displayName]));
     const teams = (raw.teams || []).map((team) => {
       const record = team.record?.overall || {};
@@ -35,6 +36,8 @@ export const handler = async () => {
             lineupSlotId: entry.lineupSlotId,
             injuryStatus: player.injuryStatus || "ACTIVE",
             seasonProjection: projectedTotal(player),
+            weeklyProjection: projectedTotal(player, currentMatchupPeriod) || projectedTotal(player) / 17,
+            percentOwned: Number(player.ownership?.percentOwned || 0),
           };
         }),
       };
@@ -50,7 +53,7 @@ export const handler = async () => {
     return {
       statusCode: 200,
       headers: { "content-type": "application/json", "cache-control": "public, max-age=300, s-maxage=300" },
-      body: JSON.stringify({ name: raw.settings?.name || "My Wet Fantasy", season: raw.seasonId, currentMatchupPeriod: raw.status?.currentMatchupPeriod || 1, teams, schedule }),
+      body: JSON.stringify({ name: raw.settings?.name || "My Wet Fantasy", season: raw.seasonId, currentMatchupPeriod, teams, schedule }),
     };
   } catch (error) {
     return { statusCode: 502, body: JSON.stringify({ error: "Unable to reach ESPN" }) };

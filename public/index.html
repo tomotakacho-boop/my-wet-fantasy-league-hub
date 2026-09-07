@@ -57,7 +57,7 @@
 
       <section class="view" data-view-panel="power">
         <div class="page-shell power-shell">
-          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><p class="eyebrow eyebrow-light">Drafted roster issue</p><h1>The first hierarchy of the season.</h1><p>Week 0 measures roster strength from ESPN season projections, optimized for this league’s half-PPR lineup and three FLEX spots.</p><div class="issue-stamp"><small>ISSUE</small><strong>00</strong><span>ROSTER MODEL</span></div></header>
+          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><p class="eyebrow eyebrow-light">Projected scoring issue</p><h1>Projected points, not an abstract grade.</h1><p>Every ranking is a forecast of the team’s Week 1 lineup score. The ± figure is the model’s expected week-to-week volatility.</p><div class="issue-stamp"><small>LEAGUE AVG</small><strong>105</strong><span>PROJECTED POINTS</span></div></header>
           <div class="section-heading"><div><p class="eyebrow">The fourteen</p><h2>Week 0 power rankings</h2></div><span>Scores update when ESPN projections change.</span></div>
           <div class="ranking-list" id="ranking-list"></div>
         </div>
@@ -67,13 +67,14 @@
         <div class="page-shell methods-shell">
           <div class="page-heading"><div><p class="eyebrow">Model notes</p><h1>How the rankings work.</h1><p class="lede">Week 0 is a forward-looking roster score. Weekly performance joins the model after games are played.</p></div></div>
           <div class="method-grid">
-            <article class="panel method-card"><span>01</span><h2>65% · Starting lineup</h2><p>The highest projected legal lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. ESPN’s 2026 season projections supply the player values.</p></article>
-            <article class="panel method-card"><span>02</span><h2>20% · Skill depth</h2><p>The best remaining RB, WR, and TE options after the optimized lineup is filled. This rewards usable injury and bye-week coverage.</p></article>
-            <article class="panel method-card"><span>03</span><h2>15% · Star power</h2><p>The top three projected RB, WR, and TE players on each roster. This captures the weekly ceiling created by elite players.</p></article>
-            <article class="panel method-card"><span>04</span><h2>Score scale</h2><p>Each component is ranked against the other 13 teams. The blended percentile is translated to a 70–98 score; it is a relative league rating, not a projected point total.</p></article>
-            <article class="panel method-card method-wide"><span>05</span><h2>Week 1 and beyond</h2><div class="blend-row"><strong>Week 1</strong><i></i><em>85% roster strength · 15% performance</em></div><div class="blend-row"><strong>Week 4</strong><i></i><em>60% roster strength · 40% performance</em></div><div class="blend-row"><strong>Week 8+</strong><i></i><em>40% roster strength · 60% performance</em></div></article>
+            <article class="panel method-card"><span>01</span><h2>55% · Starting lineup</h2><p>The highest projected legal Week 1 lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. This is the forecast’s primary input.</p></article>
+            <article class="panel method-card"><span>02</span><h2>25% · Star power</h2><p>The top three projected RB, WR, and TE players raise a team’s ceiling and receive more influence than interchangeable bench depth.</p></article>
+            <article class="panel method-card"><span>03</span><h2>5% · Skill depth</h2><p>The best remaining RB, WR, and TE options provide a small durability adjustment without overstating bench value.</p></article>
+            <article class="panel method-card"><span>04</span><h2>5% · Injury risk</h2><p>Questionable, doubtful, out, and injured-reserve designations reduce the projection according to the affected player’s expected role.</p></article>
+            <article class="panel method-card"><span>05</span><h2>10% · Wild card</h2><p>Low-owned players with meaningful projections, injury-created opportunity, and high-upside stashes create a controlled upside adjustment.</p></article>
+            <article class="panel method-card"><span>06</span><h2>Projected points ± volatility</h2><p>The final output stays in fantasy points. Standard deviation reflects positional volatility, concentrated star usage, and injury uncertainty.</p></article>
           </div>
-          <p class="template-note">The model uses ESPN projections as inputs and recalculates across this league only. Commissioner commentary can be added without changing the numeric score.</p>
+          <p class="template-note">After every week, projected points will be compared with actual points. That forecast error will be used to recalibrate the model without changing the meaning of the published score.</p>
         </div>
       </section>
 
@@ -90,6 +91,7 @@
     <div class="modal-backdrop" id="tool-modal" hidden><div class="tool-modal"><button class="modal-close" id="modal-close" type="button">×</button><p class="eyebrow" id="modal-kicker">TRADE BLOCK</p><h2 id="modal-title">Put a player on the block</h2><div id="modal-content"></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/app.js?v=3"></script>
+    <script src="/rankings-v2.js?v=1"></script>
     <script src="/tools.js?v=1"></script>
     <script src="/channel-tools.js?v=1"></script>
   </body>
