@@ -71,6 +71,9 @@ create table if not exists public.power_ranking_reactions (
 );
 
 alter table public.power_ranking_reactions add column if not exists display_name text not null default 'League member';
+alter table public.power_ranking_reactions drop constraint if exists power_ranking_reactions_emoji_check;
+alter table public.power_ranking_reactions drop constraint if exists power_ranking_reactions_emoji_length_check;
+alter table public.power_ranking_reactions add constraint power_ranking_reactions_emoji_length_check check (char_length(emoji) between 1 and 32);
 
 create index if not exists power_ranking_comments_key_idx on public.power_ranking_comments(ranking_key,created_at);
 create index if not exists power_ranking_reactions_key_idx on public.power_ranking_reactions(ranking_key);
