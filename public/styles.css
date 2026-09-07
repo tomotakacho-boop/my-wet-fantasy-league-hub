@@ -160,6 +160,24 @@ h2 { margin-bottom:0; font:650 27px/1.12 var(--serif); letter-spacing:-.02em; }
 .member small { margin-top:2px; color:#777c85; font-size:10px; }
 .empty-state { padding:22px; color:var(--muted); text-align:center; }
 .feed-empty { margin-top:30px; color:#9ea3ac; }
+.compact-title,.power-hero h1,.methods-shell h1 { font-size:clamp(30px,3.5vw,48px); }
+.compact-heading { margin-bottom:22px; }
+.channel-tools { margin-left:auto; display:flex; gap:7px; }
+.channel-tools button { padding:7px 10px; border:1px solid #555860; border-radius:5px; color:#d8dbe0; background:#2b2d31; font-size:11px; font-weight:700; }
+.channel-tools button:hover { background:#41434a; }
+.modal-backdrop { position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:20px; background:rgba(8,14,26,.72); }
+.modal-backdrop[hidden] { display:none; }
+.tool-modal { position:relative; width:min(560px,100%); max-height:90vh; overflow:auto; padding:30px; border-radius:14px; background:var(--card); color:var(--ink); box-shadow:0 24px 80px rgba(0,0,0,.35); }
+.tool-modal h2 { margin:0 0 22px; }
+.modal-close { position:absolute; top:13px; right:13px; width:32px; height:32px; border:1px solid var(--line); border-radius:50%; color:var(--ink); background:transparent; font-size:22px; line-height:1; }
+.tool-form { display:grid; gap:12px; }
+.tool-form label { color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+.tool-form input,.tool-form textarea,.tool-form select { width:100%; padding:12px; border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink); }
+.tool-form textarea { min-height:80px; resize:vertical; }
+.tool-form button { padding:12px 15px; border:0; border-radius:7px; color:var(--navy); background:var(--gold); font-weight:800; }
+.player-suggestions { display:grid; gap:4px; max-height:170px; overflow:auto; }
+.player-suggestions button { padding:9px 10px; border:1px solid var(--line); border-radius:6px; color:var(--ink); background:#fff; text-align:left; }
+.meme-preview { width:100%; max-height:260px; object-fit:contain; border-radius:6px; background:#eee; }
 .toast { position:fixed; right:22px; bottom:22px; z-index:100; max-width:360px; padding:13px 16px; border-radius:7px; color:#fff; background:#101c32; box-shadow:var(--shadow); }
 @media (max-width:1100px) { .header-inner { grid-template-columns:1fr auto; } .primary-nav { grid-row:2; grid-column:1/-1; min-height:54px; justify-content:center; } .access-placeholder { grid-column:2; grid-row:1; } .site-header { position:static; } .overview-grid { grid-template-columns:1fr; } .overview-side { grid-template-columns:1fr 1fr; } .feed-layout { grid-template-columns:210px 1fr; } .member-rail { display:none; } }
 @media (max-width:760px) { .header-inner,.page-shell,.power-shell { width:min(100% - 24px,1320px); } .header-inner { padding-top:13px; } .access-placeholder { display:none; } .brand { grid-column:1/-1; } .primary-nav { justify-content:flex-start; overflow-x:auto; } .nav-link { min-height:52px; padding:0 12px; white-space:nowrap; } .page-shell { padding-top:34px; } .page-heading,.section-heading { align-items:flex-start; flex-direction:column; } .sync-block { min-width:0; } .division-grid,.overview-side,.dashboard-strip,.method-grid { grid-template-columns:1fr; } .division:first-child { border-right:0; border-bottom:1px solid var(--line); } .single-division .standings-head,.single-division .standing-row { grid-template-columns:32px minmax(150px,1fr) 62px 48px; } .dashboard-strip article { border-right:0; border-bottom:1px solid var(--line); } .method-wide { grid-column:auto; } .blend-row { grid-template-columns:1fr; gap:8px; } .issue-stamp { position:static; margin-top:26px; padding:18px 0 0; border-left:0; border-top:1px solid rgba(255,255,255,.15); } .power-hero { padding:30px 24px; } .ranking-card { grid-template-columns:64px 1fr; } .rank-score { display:none; } .feed-layout { grid-template-columns:1fr; } .channel-rail { min-height:auto; flex-direction:row; align-items:center; gap:4px; overflow-x:auto; padding:8px; } .channel-rail>p,.server-mark,.league-pills { display:none; } .channel { white-space:nowrap; } .feed-main { min-height:calc(100vh - 180px); } }

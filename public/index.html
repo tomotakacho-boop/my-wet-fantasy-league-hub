@@ -31,7 +31,7 @@
       <section class="view is-active" data-view-panel="overview">
         <div class="page-shell">
           <div class="page-heading">
-            <div><p class="eyebrow">League command center</p><h1>Everything that matters this week.</h1><p class="lede">Standings, matchups, and league activity will sync from ESPN.</p></div>
+            <div><p class="eyebrow">League command center</p><h1 class="compact-title">Everything that matters this week.</h1><p class="lede">Standings, matchups, and league activity will sync from ESPN.</p></div>
             <div class="sync-block"><span class="status-dot is-offline" id="espn-status-dot"></span><span><strong id="espn-status">Connecting to ESPN</strong><small id="espn-updated">Loading league data</small></span></div>
           </div>
 
@@ -87,7 +87,9 @@
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <div class="modal-backdrop" id="tool-modal" hidden><div class="tool-modal"><button class="modal-close" id="modal-close" type="button">×</button><p class="eyebrow" id="modal-kicker">TRADE BLOCK</p><h2 id="modal-title">Put a player on the block</h2><div id="modal-content"></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/app.js?v=3"></script>
+    <script src="/tools.js?v=1"></script>
   </body>
 </html>
