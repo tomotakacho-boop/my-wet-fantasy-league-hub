@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="My Wet Fantasy league hub." />
+    <title>My Wet Fantasy · League Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css?v=1" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#overview" aria-label="My Wet Fantasy home">
+          <span class="brand-mark">MW</span>
+          <span><small>2026 · LEAGUE HUB</small><strong>My Wet Fantasy</strong></span>
+        </a>
+        <nav class="primary-nav" aria-label="League navigation">
+          <button class="nav-link is-active" data-view="overview">Overview</button>
+          <button class="nav-link" data-view="power">Power rankings</button>
+          <button class="nav-link" data-view="methods">Methodology</button>
+          <button class="nav-link" data-view="feed">League feed</button>
+        </nav>
+        <div class="access-placeholder"><span></span><div><small>MEMBER ACCESS</small><strong>Coming soon</strong></div></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="view is-active" data-view-panel="overview">
+        <div class="page-shell">
+          <div class="page-heading">
+            <div><p class="eyebrow">League command center</p><h1>Everything that matters this week.</h1><p class="lede">Standings, matchups, and league activity will sync from ESPN.</p></div>
+            <div class="sync-block"><span class="status-dot is-offline"></span><span><strong>ESPN connection pending</strong><small>Template mode</small></span></div>
+          </div>
+
+          <div class="overview-grid">
+            <article class="panel standings-panel">
+              <div class="panel-heading"><div><p class="eyebrow">The table</p><h2>League standings by division</h2></div><span class="quiet-chip">Preseason</span></div>
+              <div class="division-grid">
+                <section class="division"><h3>Division 1</h3><div class="standings-head"><span>RK</span><span>TEAM</span><span>W–L–T</span><span>PF</span></div><div id="division-one"></div></section>
+                <section class="division"><h3>Division 2</h3><div class="standings-head"><span>RK</span><span>TEAM</span><span>W–L–T</span><span>PF</span></div><div id="division-two"></div></section>
+              </div>
+            </article>
+
+            <aside class="overview-side">
+              <article class="panel prize-card"><p class="eyebrow">Prize pool</p><div class="prize-total">TBD</div><div class="prize-line"><span>Champion</span><strong>—</strong></div><div class="prize-line"><span>Runner-up</span><strong>—</strong></div><div class="prize-line"><span>Third</span><strong>—</strong></div></article>
+              <article class="panel slate-card"><div class="panel-heading compact"><div><p class="eyebrow">Head to head</p><h2>Week 1 slate</h2></div><span class="quiet-chip">ESPN</span></div><div id="matchup-list"></div></article>
+            </aside>
+          </div>
+
+          <section class="dashboard-strip" aria-label="Upcoming league features">
+            <article><span>01</span><div><strong>Live standings</strong><small>Records, points for, and divisions</small></div></article>
+            <article><span>02</span><div><strong>Weekly matchups</strong><small>Scores and the full schedule</small></div></article>
+            <article><span>03</span><div><strong>League activity</strong><small>Rankings, posts, trades, and memes</small></div></article>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="power">
+        <div class="page-shell power-shell">
+          <header class="power-hero"><span class="sample-label">TEMPLATE · COMING SOON</span><p class="eyebrow eyebrow-light">Preseason issue</p><h1>Power rankings start when the league is connected.</h1><p>Each issue will combine roster strength, weekly performance, record, matchup context, and commissioner commentary.</p><div class="issue-stamp"><small>ISSUE</small><strong>00</strong><span>MODEL PENDING</span></div></header>
+          <div class="section-heading"><div><p class="eyebrow">The twelve</p><h2>Ranking layout</h2></div><span>Scores and team names will come from league data.</span></div>
+          <div class="ranking-list" id="ranking-list"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="methods">
+        <div class="page-shell methods-shell">
+          <div class="page-heading"><div><p class="eyebrow">Model notes</p><h1>How the rankings will work.</h1><p class="lede">The final weights will be calibrated after ESPN rosters and scoring settings are available.</p></div></div>
+          <div class="method-grid">
+            <article class="panel method-card"><span>01</span><h2>Week 0 · Team Strength</h2><p>A forward-looking roster score based on projected starter value, positional advantage, depth, injury context, and replacement-level value.</p></article>
+            <article class="panel method-card"><span>02</span><h2>Week 1+ · Performance Index</h2><p>An earned-results score using points, all-play performance, opponent context, lineup efficiency, and consistency as the season develops.</p></article>
+            <article class="panel method-card method-wide"><span>03</span><h2>Weekly blend</h2><div class="blend-row"><strong>Early season</strong><i></i><em>Roster strength carries more weight</em></div><div class="blend-row"><strong>Midseason</strong><i></i><em>Roster and performance move toward balance</em></div><div class="blend-row"><strong>Late season</strong><i></i><em>Results and current form drive the model</em></div></article>
+          </div>
+          <p class="template-note">This methodology is a structural placeholder. No scores are being calculated yet.</p>
+        </div>
+      </section>
+
+      <section class="view feed-view" data-view-panel="feed">
+        <div class="feed-layout">
+          <aside class="channel-rail"><div class="server-mark">MW</div><p>MY WET FANTASY</p><button class="channel is-active"># league-feed</button><button class="channel"># trade-talk <small>soon</small></button><button class="channel"># memes <small>soon</small></button><div class="league-pills"><span>12 teams</span><span>ESPN</span></div></aside>
+          <section class="feed-main"><header class="channel-header"><strong># league-feed</strong><span>League conversation will live here.</span></header><div class="message-area"><div class="feed-welcome"><span>#</span><h1>Welcome to the league feed.</h1><p>Messages, reactions, replies, images, and GIFs will appear after member access is connected.</p></div><article class="system-message"><div class="avatar-placeholder">MW</div><div><div><strong>My Wet Fantasy</strong><time>Template</time></div><p>The league hub is ready for ESPN, Supabase, and Google login setup.</p></div></article></div><form class="composer" aria-label="Message composer preview"><button type="button" disabled>＋</button><input disabled placeholder="Member posting is coming soon" /><button type="button" disabled>GIF</button><button type="button" disabled>Send</button></form></section>
+          <aside class="member-rail"><p>LEAGUE MEMBERS</p><div id="member-list"></div></aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js?v=1"></script>
+  </body>
+</html>
