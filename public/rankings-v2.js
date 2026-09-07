@@ -1,7 +1,6 @@
 (() => {
   const weekly = p => Number(p.weeklyProjection || 0) || Number(p.seasonProjection || 0) / 17;
   const average = values => values.reduce((a, b) => a + b, 0) / Math.max(values.length, 1);
-  const scaleToLeague = (value, mean) => mean > 0 ? 105 * value / mean : 105;
   const injuryWeight = status => ({ ACTIVE: 0, QUESTIONABLE: .25, DOUBTFUL: .7, OUT: 1, INJURY_RESERVE: 1, IR: 1, SUSPENSION: 1 }[status] ?? .1);
   const cv = position => ({ QB: .2, RB: .34, WR: .39, TE: .36, "D/ST": .42, K: .32 }[position] || .35);
   const optimize = team => {
@@ -24,19 +23,22 @@
     return { team, starters, stars, bench, wildcard, lineup, starPower, depth, injuryRisk, health: Math.max(1, lineup - injuryRisk), wildcardValue, rawSd };
   };
   rankings = teams => {
-    const rows = teams.map(optimize), means = {
-      lineup: average(rows.map(x => x.lineup)), starPower: average(rows.map(x => x.starPower)), depth: average(rows.map(x => x.depth)),
-      health: average(rows.map(x => x.health)), wildcardValue: average(rows.map(x => x.wildcardValue))
-    };
+    const rows = teams.map(optimize), leagueStarPower = average(rows.map(x => x.starPower)), leagueDepth = average(rows.map(x => x.depth));
     rows.forEach(x => {
-      x.projected = .55 * scaleToLeague(x.lineup, means.lineup) + .25 * scaleToLeague(x.starPower, means.starPower) + .05 * scaleToLeague(x.depth, means.depth) + .05 * scaleToLeague(x.health, means.health) + .10 * scaleToLeague(x.wildcardValue, means.wildcardValue);
-      x.projected = Math.max(70, Math.min(140, x.projected));
+      const starScenario = x.lineup + .35 * (x.starPower - leagueStarPower);
+      const depthScenario = x.lineup + .15 * (x.depth - leagueDepth);
+      const injuryScenario = x.lineup - x.injuryRisk;
+      const wildcardScenario = x.lineup + .5 * x.wildcardValue;
+      x.projected = .55 * x.lineup + .25 * starScenario + .05 * depthScenario + .05 * injuryScenario + .10 * wildcardScenario;
+      x.projected = Math.max(0, x.projected);
       x.stdDev = Math.max(6, Math.min(22, x.rawSd * (x.projected / Math.max(x.lineup, 1)) + x.injuryRisk * .2));
     });
     return rows.sort((a, b) => b.projected - a.projected);
   };
   renderRankings = teams => {
-    document.querySelector("#ranking-list").innerHTML = rankings(teams).map((x, i) => {
+    const ordered = rankings(teams), leagueAverage = average(ordered.map(x => x.projected)), averageEl = document.querySelector("#projected-league-average");
+    if (averageEl) averageEl.textContent = leagueAverage.toFixed(1);
+    document.querySelector("#ranking-list").innerHTML = ordered.map((x, i) => {
       const leaders = x.stars.map(p => p.fullName).join(", ") || "Projection data pending";
       const injury = x.injuryRisk > 1 ? ` Injury uncertainty removes about ${x.injuryRisk.toFixed(1)} raw lineup points.` : " The current starting group carries limited injury drag.";
       const wild = x.wildcard ? `${x.wildcard.fullName} is the model’s wildcard.` : "The wildcard slot is still open.";
