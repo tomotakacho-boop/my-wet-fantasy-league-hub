@@ -23,21 +23,60 @@
     "starters": 9,
     "bench": 5,
     "injuredReserve": 1,
-    "lineup": { "QB": 1, "RB": 1, "WR": 1, "TE": 1, "FLEX": 3, "DST": 1, "K": 1 },
-    "maximums": { "QB": 3, "RB": 6, "WR": 6, "TE": 3, "DST": 3, "K": 3 }
+    "lineup": {
+      "QB": 1,
+      "RB": 1,
+      "WR": 1,
+      "TE": 1,
+      "FLEX": 3,
+      "DST": 1,
+      "K": 1
+    },
+    "maximums": {
+      "QB": 3,
+      "RB": 6,
+      "WR": 6,
+      "TE": 3,
+      "DST": 3,
+      "K": 3
+    }
   },
   "scoring": {
     "passing": { "yards": 0.04, "touchdown": 4, "interception": -1, "twoPointConversion": 2 },
     "rushing": { "yards": 0.1, "touchdown": 6, "twoPointConversion": 2 },
     "receiving": { "yards": 0.1, "reception": 0.5, "touchdown": 6, "twoPointConversion": 2 },
-    "kicking": { "patMade": 1, "patMissed": -1, "fieldGoalMade0To39": 3, "fieldGoalMade40To49": 4, "fieldGoalMissed0To39": -1, "fieldGoalMade50To59": 5, "fieldGoalMade60Plus": 6 },
+    "kicking": {
+      "patMade": 1,
+      "patMissed": -1,
+      "fieldGoalMade0To39": 3,
+      "fieldGoalMade40To49": 4,
+      "fieldGoalMissed0To39": -1,
+      "fieldGoalMade50To59": 5,
+      "fieldGoalMade60Plus": 6
+    },
     "defenseSpecialTeams": {
-      "kickoffReturnTouchdown": 6, "puntReturnTouchdown": 6, "interceptionReturnTouchdown": 6,
-      "fumbleReturnTouchdown": 6, "blockedKickReturnTouchdown": 6, "sack": 1, "blockedKick": 2,
-      "interception": 2, "fumbleRecovered": 2, "fumbleForced": 2, "safety": 2,
+      "kickoffReturnTouchdown": 6,
+      "puntReturnTouchdown": 6,
+      "interceptionReturnTouchdown": 6,
+      "fumbleReturnTouchdown": 6,
+      "blockedKickReturnTouchdown": 6,
+      "sack": 1,
+      "blockedKick": 2,
+      "interception": 2,
+      "fumbleRecovered": 2,
+      "fumbleForced": 2,
+      "safety": 2,
       "pointsAllowed": { "0": 5, "1-6": 4, "7-13": 3, "14-17": 1, "28-34": -1, "35-45": -3, "46+": -5 },
       "yardsAllowed": { "under100": 5, "100-199": 3, "200-299": 2, "350-399": -1, "400-449": -2, "450-499": -3, "500-549": -4, "550+": -5 }
     },
-    "miscellaneous": { "kickoffReturnTouchdown": 6, "puntReturnTouchdown": 6, "fumbleRecoveredForTouchdown": 6, "totalFumble": -1, "interceptionReturnTouchdown": 6, "fumbleReturnTouchdown": 6, "blockedKickReturnTouchdown": 6 }
+    "miscellaneous": {
+      "kickoffReturnTouchdown": 6,
+      "puntReturnTouchdown": 6,
+      "fumbleRecoveredForTouchdown": 6,
+      "totalFumble": -1,
+      "interceptionReturnTouchdown": 6,
+      "fumbleReturnTouchdown": 6,
+      "blockedKickReturnTouchdown": 6
+    }
   }
 }

@@ -1,54 +1,41 @@
-const leagueTeams = [
-  { id: 1, name: "Child's Play (LIAN)", owner: "Charles Lian" },
-  { id: 2, name: "Unc Central (BOX)", owner: "Shaurya Baxi" },
-  { id: 3, name: "Crooklyn L Train (NoLM)", owner: "Shrikar Kundur" },
-  { id: 4, name: "AI-YAI-YUK WE'RE WORTH(Y)LESS (UI4L)", owner: "Kevin Wong" },
-  { id: 5, name: "Bunda Bandits (BLÜD)", owner: "Vikram Ashok" },
-  { id: 6, name: "Staten Island Dumptruck (SID)", owner: "Nikhil Glese" },
-  { id: 7, name: "Cooking Lamb In Packerstan 🥾 (MOSS)", owner: "Randy Lai" },
-  { id: 8, name: "🅱️ASTARD ✓", owner: "Gyan Kandhari" },
-  { id: 9, name: "New York Squib Cakes (SAm)", owner: "Sameer Goyal" },
-  { id: 10, name: "Lowry's Dumpy (THIC)", owner: "Soham Kamat" },
-  { id: 11, name: "Mala Party (MRTY)", owner: "Sahisnu Malapati" },
-  { id: 12, name: "McConkey Kong (AM)", owner: "Andrew Magee" },
-  { id: 13, name: "Nactuaa spit on that thang (ULOS)", owner: "Phil Tereshenko" },
-  { id: 14, name: "Cho Consulting Group", owner: "Tomotaka Cho" },
-];
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const CHANNELS = { "league-feed": "League conversation, matchup talk, and announcements.", "trade-talk": "Put players on notice and start trade conversations.", memes: "Images and GIFs only. Keep the timeline wet." };
+let league, db, user, channel = "league-feed", replyTo = null, pendingMedia = null;
 
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const fallbackTeams = [
+  [1,"Child's Play","Charles Lian"],[3,"Unc Central","Shaurya Baxi"],[5,"Crooklyn L Train","Shrikar Kundur"],[6,"AI-YAI-YUK WE'RE WORTH(Y)LESS","Kevin Wong"],[7,"Bunda Bandits","Vikram Ashok"],[9,"Staten Island Dumptruck","Nikhil Gosike"],[10,"Cooking Lamb In Packerstan 🥾","Randy Lai"],[11,"🅱️ASTARD ✓","Gyan Kandhari"],[12,"New York Squib Cakes","Sameer Goyal"],[13,"Lowry's Dumpy","Soham Kamat"],[14,"Mala Party","Sahisnu Malapati"],[15,"McConkey Kong","Andrew Magee"],[17,"Nactuaa spit on that thang","Phil Tereshenko"],[19,"Cho Consulting Group","Tomotaka Cho"]
+].map(([id,name,owner]) => ({ id,name,owner,roster:[],record:{wins:0,losses:0,ties:0,pointsFor:0} }));
+const initials = (v="MW") => v.split(/\s+/).map(w=>w[0]).join("").replace(/[^A-Za-z]/g,"").slice(0,2).toUpperCase() || "MW";
+const esc = (v="") => String(v).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[c]);
+function toast(message){const el=$("#toast");el.textContent=message;el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,4200)}
 
-function teamRows(teams) {
-  return teams.map((team, index) => `
-    <div class="standing-row">
-      <span>${index + 1}</span>
-      <div class="team-cell"><i>${team.name.split(/\s+/).map((word) => word[0]).join("").replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</i><span><strong>${team.name}</strong><small>${team.owner}</small></span></div>
-      <span>0–0–0</span><span>0.0</span>
-    </div>`).join("");
-}
+function switchView(view,hash=true){$$('[data-view]').forEach(b=>b.classList.toggle("is-active",b.dataset.view===view));$$('[data-view-panel]').forEach(p=>p.classList.toggle("is-active",p.dataset.viewPanel===view));if(hash)history.replaceState(null,"",`#${view}`);scrollTo({top:0,behavior:"instant"})}
+function teamAvatar(t){return t.logo?`<img src="${esc(t.logo)}" alt="" />`:`<i>${initials(t.name)}</i>`}
+function renderStandings(teams){const ordered=[...teams].sort((a,b)=>b.record.wins-a.record.wins||b.record.pointsFor-a.record.pointsFor||a.name.localeCompare(b.name));$("#league-standings").innerHTML=ordered.map((t,i)=>`<div class="standing-row"><span>${i+1}</span><div class="team-cell">${teamAvatar(t)}<span><strong>${esc(t.name)}</strong><small>${esc(t.owner)}</small></span></div><span>${t.record.wins}–${t.record.losses}–${t.record.ties}</span><span>${Number(t.record.pointsFor||0).toFixed(1)}</span></div>`).join("")}
+function renderMatchups(){const byId=new Map(league.teams.map(t=>[t.id,t])),week=league.currentMatchupPeriod||1,games=league.schedule.filter(g=>g.matchupPeriodId===week&&g.homeTeamId&&g.awayTeamId);$(".slate-card h2").textContent=`Week ${week} slate`;$("#matchup-list").innerHTML=games.map(g=>{const h=byId.get(g.homeTeamId),a=byId.get(g.awayTeamId);return `<div class="matchup"><span>${esc(a?.name||"TBD")}<small>${Number(g.awayScore||0).toFixed(1)}</small></span><span>VS</span><span>${esc(h?.name||"TBD")}<small>${Number(g.homeScore||0).toFixed(1)}</small></span></div>`}).join("")||'<div class="empty-state">No matchup data available yet.</div>'}
+function renderMembers(teams){$("#member-list").innerHTML=teams.map(t=>`<div class="member">${teamAvatar(t)}<span><strong>${esc(t.name)}</strong><small>${esc(t.owner)}</small></span></div>`).join("")}
 
-function renderTemplateData() {
-  $("#league-standings").innerHTML = teamRows(leagueTeams);
-  $("#matchup-list").innerHTML = Array.from({ length: 7 }, (_, index) => `
-    <div class="matchup"><span>${leagueTeams[index].name}</span><span>VS</span><span>${leagueTeams[13 - index].name}</span></div>`).join("");
-  $("#ranking-list").innerHTML = leagueTeams.map((team, index) => `
-    <article class="ranking-card"><div class="rank-number">${index + 1}</div><div class="rank-copy"><small>PRESEASON · ${team.owner}</small><h3>${team.name}</h3><p>Weekly power-ranking analysis will appear here after the ESPN roster sync.</p></div><div class="rank-score">—</div></article>`).join("");
-  $("#member-list").innerHTML = leagueTeams.map((team) => `<div class="member"><i>${team.name.split(/\s+/).map((word) => word[0]).join("").replace(/[^A-Za-z]/g, "").slice(0, 2).toUpperCase()}</i><span><strong>${team.name}</strong><small>${team.owner}</small></span></div>`).join("");
-}
+const proj=p=>Number(p.seasonProjection||0);
+function take(players,pos,n,used){return players.filter(p=>p.position===pos&&!used.has(p.id)).sort((a,b)=>proj(b)-proj(a)).slice(0,n).map(p=>(used.add(p.id),p))}
+function modelTeam(team){const p=team.roster||[],used=new Set(),starters=[...take(p,"QB",1,used),...take(p,"RB",1,used),...take(p,"WR",1,used),...take(p,"TE",1,used),...take(p,"D/ST",1,used),...take(p,"K",1,used)];const flex=p.filter(x=>["RB","WR","TE"].includes(x.position)&&!used.has(x.id)).sort((a,b)=>proj(b)-proj(a)).slice(0,3);flex.forEach(x=>used.add(x.id));starters.push(...flex);const skill=p.filter(x=>["RB","WR","TE"].includes(x.position)).sort((a,b)=>proj(b)-proj(a)),depth=skill.filter(x=>!used.has(x.id)).slice(0,3);return {team,starters,starterValue:starters.reduce((s,x)=>s+proj(x),0),depthValue:depth.reduce((s,x)=>s+proj(x),0),starValue:skill.slice(0,3).reduce((s,x)=>s+proj(x),0),stars:skill.slice(0,3),concern:[...starters].filter(x=>["RB","WR","TE"].includes(x.position)).sort((a,b)=>proj(a)-proj(b))[0]}}
+function pct(items,key){const s=[...items].sort((a,b)=>a[key]-b[key]),m=new Map();s.forEach((x,i)=>m.set(x.team.id,s.length===1?1:i/(s.length-1)));return m}
+function rankings(teams){const a=teams.map(modelTeam),sp=pct(a,"starterValue"),dp=pct(a,"depthValue"),xp=pct(a,"starValue");a.forEach(x=>{x.percentile=.65*sp.get(x.team.id)+.20*dp.get(x.team.id)+.15*xp.get(x.team.id);x.score=70+28*x.percentile});return a.sort((x,y)=>y.score-x.score)}
+function renderRankings(teams){$("#ranking-list").innerHTML=rankings(teams).map((x,i)=>{const leaders=x.stars.map(p=>p.fullName).join(", "),concern=x.concern?`${x.concern.fullName} is the lowest-projected skill starter`:"The depth chart is still settling",tags=x.stars.map(p=>`<span>${esc(p.fullName)} <b>${Math.round(proj(p))}</b></span>`).join("");return `<article class="ranking-card"><div class="rank-number">${i+1}</div><div class="rank-copy"><small>0–0 · ${esc(x.team.owner)}</small><h3>${esc(x.team.name)}</h3><p><strong>${esc(leaders||"Projection data pending")}</strong> lead an optimized lineup projected for ${x.starterValue.toFixed(1)} season points. ${esc(concern)}; three-player depth totals ${x.depthValue.toFixed(1)}.</p><div class="player-tags">${tags}</div></div><div class="rank-score"><strong>${x.score.toFixed(1)}</strong><small>TEAM STRENGTH</small></div></article>`}).join("")}
+async function loadLeague(){try{const r=await fetch("/api/league");if(!r.ok)throw Error("ESPN request failed");league=await r.json();renderStandings(league.teams);renderMatchups();renderRankings(league.teams);renderMembers(league.teams);$("#espn-status").textContent=league.name||"ESPN connected";$("#espn-updated").textContent="Live rosters, standings, and matchups";$("#espn-status-dot").classList.remove("is-offline")}catch(e){league={teams:fallbackTeams,schedule:[],currentMatchupPeriod:1};renderStandings(fallbackTeams);renderRankings(fallbackTeams);renderMembers(fallbackTeams);$("#matchup-list").innerHTML='<div class="empty-state">ESPN data will appear after the Netlify function deploys.</div>';$("#espn-status").textContent="ESPN connection unavailable";$("#espn-updated").textContent="Showing saved league identities"}}
 
-function switchView(view, updateHash = true) {
-  $$("[data-view]").forEach((button) => button.classList.toggle("is-active", button.dataset.view === view));
-  $$("[data-view-panel]").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.viewPanel === view));
-  if (updateHash) history.replaceState(null, "", `#${view}`);
-  window.scrollTo({ top: 0, behavior: "instant" });
-}
+function authUI(){const on=!!user;$("#auth-kicker").textContent=on?"SIGNED IN":"MEMBER ACCESS";$("#auth-label").textContent=on?(user.user_metadata?.full_name||user.email):"Sign in with Google";$("#auth-button").classList.toggle("is-signed-in",on);$("#message-input").disabled=!on;$("#send-button").disabled=!on;$("#message-input").placeholder=on?`Message #${channel}`:"Sign in to send a message"}
+async function configureAuth(){try{const c=await(await fetch("/api/config")).json();if(!c.supabaseUrl||!c.supabaseKey||!window.supabase)throw Error();db=window.supabase.createClient(c.supabaseUrl,c.supabaseKey,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true}});if(new URL(location.href).searchParams.has("code")){await db.auth.exchangeCodeForSession(location.href);history.replaceState(null,"",`${location.pathname}#feed`)}const s=await db.auth.getSession();user=s.data.session?.user||null;if(user&&!user.email?.toLowerCase().endsWith("@gmail.com")){await db.auth.signOut();user=null;toast("Please use a gmail.com account.")}authUI();if(user){await db.from("profiles").upsert({user_id:user.id,display_name:user.user_metadata?.full_name||user.email.split("@")[0],avatar_url:user.user_metadata?.avatar_url||null},{onConflict:"user_id"});await loadMessages()}db.auth.onAuthStateChange((_e,sn)=>{user=sn?.user||null;authUI()})}catch(e){authUI();$("#auth-label").textContent="Login setup needed"}}
+async function handleAuth(){if(!db)return toast("Supabase configuration is not available yet.");if(user){await db.auth.signOut();user=null;authUI();feedWelcome();return}await db.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${location.origin}/?next=feed`,scopes:"openid email profile"}})}
 
-$$("[data-view]").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
-window.addEventListener("hashchange", () => {
-  const view = location.hash.slice(1);
-  if (["overview", "power", "methods", "feed"].includes(view)) switchView(view, false);
-});
+function feedWelcome(){$("#message-area").innerHTML=`<div class="feed-welcome"><span>#</span><h1>Welcome to #${esc(channel)}.</h1><p>${esc(CHANNELS[channel])}</p></div><div class="empty-state feed-empty">${user?"No messages yet. Start the channel.":"Sign in with Google to see and post messages."}</div>`}
+const reactorTitle=a=>a.length<=3?a.map(x=>x.display_name||"League member").join(", "):`${a.slice(0,2).map(x=>x.display_name||"League member").join(", ")} + ${a.length-2} others`;
+function renderMessages(messages,reactions){const map=new Map();reactions.forEach(r=>{const k=`${r.message_id}:${r.emoji}`;if(!map.has(k))map.set(k,[]);map.get(k).push(r)});$("#message-area").innerHTML=`<div class="feed-welcome compact-welcome"><span>#</span><h1>#${esc(channel)}</h1><p>${esc(CHANNELS[channel])}</p></div>`+messages.map(m=>{const buttons=["👍","❤️","😂","🔥","👀"].map(e=>{const people=map.get(`${m.id}:${e}`)||[];return people.length?`<button class="reaction" data-message-id="${m.id}" data-emoji="${e}" title="${esc(reactorTitle(people))}">${e} ${people.length}</button>`:""}).join("");return `<article class="feed-message"><div class="avatar-placeholder">${initials(m.author_name)}</div><div class="message-body"><div><strong>${esc(m.author_name)}</strong><time>${new Date(m.created_at).toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</time></div>${m.parent_id?'<small class="reply-note">Reply</small>':""}<p>${esc(m.content||"")}</p>${m.media_url?`<img class="message-media" src="${esc(m.media_url)}" alt="Shared media" />`:""}<div class="reaction-row">${buttons}<button class="add-reaction" data-message-id="${m.id}">+😊</button><button class="reply-action" data-message-id="${m.id}" data-author="${esc(m.author_name)}">Reply</button></div></div></article>`}).join("");$$('.reaction,.add-reaction').forEach(b=>b.onclick=()=>addReaction(b.dataset.messageId,b.dataset.emoji));$$('.reply-action').forEach(b=>b.onclick=()=>setReply(b.dataset.messageId,b.dataset.author))}
+async function loadMessages(){if(!db||!user)return feedWelcome();const q=await db.from("messages").select("*").eq("channel",channel).order("created_at",{ascending:true}).limit(200);if(q.error)return feedWelcome();const ids=q.data.map(m=>m.id);let reactions=[];if(ids.length)reactions=(await db.from("message_reactions").select("message_id,emoji,display_name").in("message_id",ids)).data||[];renderMessages(q.data,reactions)}
+async function addReaction(id,emoji){if(!user)return toast("Sign in to react.");const e=emoji||prompt("Add an emoji reaction","😂");if(!e)return;const name=user.user_metadata?.full_name||user.email.split("@")[0],r=await db.from("message_reactions").upsert({message_id:id,user_id:user.id,emoji:e,display_name:name},{onConflict:"message_id,user_id,emoji"});r.error?toast(r.error.message):loadMessages()}
+function setReply(id,author){replyTo=id;$("#reply-banner").hidden=false;$("#reply-banner").innerHTML=`Replying to ${esc(author)} <button type="button" id="cancel-reply">×</button>`;$("#cancel-reply").onclick=()=>{replyTo=null;$("#reply-banner").hidden=true};$("#message-input").focus()}
+async function upload(file){const ext=file.name.split(".").pop()?.toLowerCase()||"jpg",path=`${user.id}/${crypto.randomUUID()}.${ext}`,r=await db.storage.from("message-media").upload(path,file,{contentType:file.type});if(r.error)throw r.error;return db.storage.from("message-media").getPublicUrl(path).data.publicUrl}
+async function sendMessage(e){e.preventDefault();if(!user)return toast("Sign in to post.");const content=$("#message-input").value.trim();if(channel==="memes"&&!pendingMedia)return toast("#memes only accepts images or GIFs.");if(!content&&!pendingMedia)return;try{const mediaUrl=pendingMedia instanceof File?await upload(pendingMedia):pendingMedia,name=user.user_metadata?.full_name||user.email.split("@")[0],r=await db.from("messages").insert({channel,user_id:user.id,author_name:name,content,media_url:mediaUrl||null,parent_id:replyTo});if(r.error)throw r.error;$("#message-input").value="";pendingMedia=null;replyTo=null;$("#reply-banner").hidden=true;loadMessages()}catch(err){toast(err.message)}}
 
-renderTemplateData();
-const initialView = location.hash.slice(1);
-if (["overview", "power", "methods", "feed"].includes(initialView)) switchView(initialView, false);
+$$('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));addEventListener("hashchange",()=>{const v=location.hash.slice(1);if(["overview","power","methods","feed"].includes(v))switchView(v,false)});$$('[data-channel]').forEach(b=>b.onclick=()=>{channel=b.dataset.channel;replyTo=null;pendingMedia=null;$$('[data-channel]').forEach(x=>x.classList.toggle("is-active",x===b));$("#channel-name").textContent=`# ${channel}`;$("#channel-description").textContent=CHANNELS[channel];authUI();loadMessages()});$("#auth-button").onclick=handleAuth;$("#message-form").onsubmit=sendMessage;$("#message-input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#message-form").requestSubmit()}};$("#upload-button").onclick=()=>user?$("#media-input").click():toast("Sign in to upload an image.");$("#media-input").onchange=e=>{pendingMedia=e.target.files[0]||null;if(pendingMedia)toast(`${pendingMedia.name} ready to send.`)};$("#gif-button").onclick=()=>{if(!user)return toast("Sign in to add a GIF.");const url=prompt("Paste a direct GIF URL");if(url){pendingMedia=url;toast("GIF ready to send.")}};
+renderStandings(fallbackTeams);renderRankings(fallbackTeams);renderMembers(fallbackTeams);feedWelcome();authUI();const view=location.hash.slice(1);if(["overview","power","methods","feed"].includes(view))switchView(view,false);Promise.allSettled([loadLeague(),configureAuth()]);

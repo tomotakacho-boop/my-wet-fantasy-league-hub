@@ -1,5 +1,16 @@
 [build]
   publish = "public"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/league"
+  to = "/.netlify/functions/espn-league"
+  status = 200
+
+[[redirects]]
+  from = "/api/config"
+  to = "/.netlify/functions/public-config"
+  status = 200
 
 [[headers]]
   for = "/*"

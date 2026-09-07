@@ -10,7 +10,7 @@ Static first-pass template modeled after the Row Fast Eat Ass league hub.
 - Discord-inspired League Feed shell
 - Responsive desktop and mobile layouts
 
-This version intentionally has no ESPN connection, authentication, database, posting, reactions, uploads, or other live functionality. Team and owner names come from the supplied ESPN screenshots; standings and matchup data remain placeholders until the live connection is added.
+The live build uses a Netlify function to read ESPN rosters, standings, projections, and matchups. Google login and the three feed channels use Supabase.
 
 ## Project configuration
 
@@ -23,6 +23,27 @@ This version intentionally has no ESPN connection, authentication, database, pos
 - Starting lineup: QB, RB, WR, TE, three FLEX, D/ST, K
 
 The complete scoring and roster configuration is stored in `public/league-config.json` for the future ESPN sync and power-ranking model.
+
+## One-time Supabase setup
+
+Open the Supabase SQL Editor, paste the complete contents of `supabase/setup.sql`, and run it once. It creates profiles, messages, reactions, the `message-media` bucket, and Gmail-only row-level security policies.
+
+## Netlify environment variables
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY` (the browser-safe publishable key)
+- `ESPN_LEAGUE_ID=64665002`
+- `ESPN_SEASON=2026`
+
+The Google OAuth client must authorize `https://jtofunhvvmyoemogiqyl.supabase.co/auth/v1/callback`. Supabase's Site URL should be `https://my-wet-fantasy.netlify.app`.
+
+## Week 0 power ranking model
+
+- 65% optimized projected starting lineup
+- 20% remaining RB/WR/TE depth
+- 15% top-three RB/WR/TE star power
+
+The three components are ranked within this 14-team league and translated to a 70–98 relative Team Strength score.
 
 ## Deploy on Netlify
 

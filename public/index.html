@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=1" />
+    <link rel="stylesheet" href="/styles.css?v=3" />
   </head>
   <body>
     <header class="site-header">
@@ -23,7 +23,7 @@
           <button class="nav-link" data-view="methods">Methodology</button>
           <button class="nav-link" data-view="feed">League feed</button>
         </nav>
-        <div class="access-placeholder"><span></span><div><small>MEMBER ACCESS</small><strong>Coming soon</strong></div></div>
+        <button class="access-placeholder" id="auth-button" type="button"><span></span><div><small id="auth-kicker">MEMBER ACCESS</small><strong id="auth-label">Sign in with Google</strong></div></button>
       </div>
     </header>
 
@@ -32,7 +32,7 @@
         <div class="page-shell">
           <div class="page-heading">
             <div><p class="eyebrow">League command center</p><h1>Everything that matters this week.</h1><p class="lede">Standings, matchups, and league activity will sync from ESPN.</p></div>
-            <div class="sync-block"><span class="status-dot is-offline"></span><span><strong>ESPN connection pending</strong><small>Template mode</small></span></div>
+            <div class="sync-block"><span class="status-dot is-offline" id="espn-status-dot"></span><span><strong id="espn-status">Connecting to ESPN</strong><small id="espn-updated">Loading league data</small></span></div>
           </div>
 
           <div class="overview-grid">
@@ -42,7 +42,7 @@
             </article>
 
             <aside class="overview-side">
-              <article class="panel prize-card"><p class="eyebrow">Prize pool</p><div class="prize-total">TBD</div><div class="prize-line"><span>Champion</span><strong>—</strong></div><div class="prize-line"><span>Runner-up</span><strong>—</strong></div><div class="prize-line"><span>Third</span><strong>—</strong></div></article>
+              <article class="panel prize-card"><p class="eyebrow">Prize pool</p><div class="prize-total">$2,100</div><div class="prize-line"><span>Champion</span><strong>$1,400</strong></div><div class="prize-line"><span>Runner-up</span><strong>$450</strong></div><div class="prize-line"><span>Third</span><strong>$250</strong></div></article>
               <article class="panel slate-card"><div class="panel-heading compact"><div><p class="eyebrow">Head to head</p><h2>Week 1 slate</h2></div><span class="quiet-chip">ESPN</span></div><div id="matchup-list"></div></article>
             </aside>
           </div>
@@ -57,33 +57,37 @@
 
       <section class="view" data-view-panel="power">
         <div class="page-shell power-shell">
-          <header class="power-hero"><span class="sample-label">TEMPLATE · COMING SOON</span><p class="eyebrow eyebrow-light">Preseason issue</p><h1>Power rankings start when the league is connected.</h1><p>Each issue will combine roster strength, weekly performance, record, matchup context, and commissioner commentary.</p><div class="issue-stamp"><small>ISSUE</small><strong>00</strong><span>MODEL PENDING</span></div></header>
-          <div class="section-heading"><div><p class="eyebrow">The fourteen</p><h2>Ranking layout</h2></div><span>Scores will appear after rosters and results are connected.</span></div>
+          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><p class="eyebrow eyebrow-light">Drafted roster issue</p><h1>The first hierarchy of the season.</h1><p>Week 0 measures roster strength from ESPN season projections, optimized for this league’s half-PPR lineup and three FLEX spots.</p><div class="issue-stamp"><small>ISSUE</small><strong>00</strong><span>ROSTER MODEL</span></div></header>
+          <div class="section-heading"><div><p class="eyebrow">The fourteen</p><h2>Week 0 power rankings</h2></div><span>Scores update when ESPN projections change.</span></div>
           <div class="ranking-list" id="ranking-list"></div>
         </div>
       </section>
 
       <section class="view" data-view-panel="methods">
         <div class="page-shell methods-shell">
-          <div class="page-heading"><div><p class="eyebrow">Model notes</p><h1>How the rankings will work.</h1><p class="lede">The final weights will be calibrated after ESPN rosters and scoring settings are available.</p></div></div>
+          <div class="page-heading"><div><p class="eyebrow">Model notes</p><h1>How the rankings work.</h1><p class="lede">Week 0 is a forward-looking roster score. Weekly performance joins the model after games are played.</p></div></div>
           <div class="method-grid">
-            <article class="panel method-card"><span>01</span><h2>Week 0 · Team Strength</h2><p>A forward-looking roster score calibrated for this 14-team, half-PPR league and its QB, RB, WR, TE, three-FLEX, D/ST, and kicker starting lineup.</p></article>
-            <article class="panel method-card"><span>02</span><h2>Week 1+ · Performance Index</h2><p>An earned-results score using points, all-play performance, opponent context, lineup efficiency, and consistency as the season develops.</p></article>
-            <article class="panel method-card method-wide"><span>03</span><h2>Weekly blend</h2><div class="blend-row"><strong>Early season</strong><i></i><em>Roster strength carries more weight</em></div><div class="blend-row"><strong>Midseason</strong><i></i><em>Roster and performance move toward balance</em></div><div class="blend-row"><strong>Late season</strong><i></i><em>Results and current form drive the model</em></div></article>
+            <article class="panel method-card"><span>01</span><h2>65% · Starting lineup</h2><p>The highest projected legal lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. ESPN’s 2026 season projections supply the player values.</p></article>
+            <article class="panel method-card"><span>02</span><h2>20% · Skill depth</h2><p>The best remaining RB, WR, and TE options after the optimized lineup is filled. This rewards usable injury and bye-week coverage.</p></article>
+            <article class="panel method-card"><span>03</span><h2>15% · Star power</h2><p>The top three projected RB, WR, and TE players on each roster. This captures the weekly ceiling created by elite players.</p></article>
+            <article class="panel method-card"><span>04</span><h2>Score scale</h2><p>Each component is ranked against the other 13 teams. The blended percentile is translated to a 70–98 score; it is a relative league rating, not a projected point total.</p></article>
+            <article class="panel method-card method-wide"><span>05</span><h2>Week 1 and beyond</h2><div class="blend-row"><strong>Week 1</strong><i></i><em>85% roster strength · 15% performance</em></div><div class="blend-row"><strong>Week 4</strong><i></i><em>60% roster strength · 40% performance</em></div><div class="blend-row"><strong>Week 8+</strong><i></i><em>40% roster strength · 60% performance</em></div></article>
           </div>
-          <p class="template-note">This methodology is a structural placeholder. No scores are being calculated yet.</p>
+          <p class="template-note">The model uses ESPN projections as inputs and recalculates across this league only. Commissioner commentary can be added without changing the numeric score.</p>
         </div>
       </section>
 
       <section class="view feed-view" data-view-panel="feed">
         <div class="feed-layout">
-          <aside class="channel-rail"><div class="server-mark">MW</div><p>MY WET FANTASY</p><button class="channel is-active"># league-feed</button><button class="channel"># trade-talk <small>soon</small></button><button class="channel"># memes <small>soon</small></button><div class="league-pills"><span>14 teams</span><span>ESPN</span></div></aside>
-          <section class="feed-main"><header class="channel-header"><strong># league-feed</strong><span>League conversation will live here.</span></header><div class="message-area"><div class="feed-welcome"><span>#</span><h1>Welcome to the league feed.</h1><p>Messages, reactions, replies, images, and GIFs will appear after member access is connected.</p></div><article class="system-message"><div class="avatar-placeholder">MW</div><div><div><strong>My Wet Fantasy</strong><time>Template</time></div><p>The league hub is ready for ESPN, Supabase, and Google login setup.</p></div></article></div><form class="composer" aria-label="Message composer preview"><button type="button" disabled>＋</button><input disabled placeholder="Member posting is coming soon" /><button type="button" disabled>GIF</button><button type="button" disabled>Send</button></form></section>
+          <aside class="channel-rail"><div class="server-mark">MW</div><p>MY WET FANTASY</p><button class="channel is-active" data-channel="league-feed"># league-feed</button><button class="channel" data-channel="trade-talk"># trade-talk</button><button class="channel" data-channel="memes"># memes</button><div class="league-pills"><span>14 teams</span><span>ESPN</span></div></aside>
+          <section class="feed-main"><header class="channel-header"><strong id="channel-name"># league-feed</strong><span id="channel-description">League conversation, matchup talk, and announcements.</span></header><div class="message-area" id="message-area"><div class="feed-welcome"><span>#</span><h1>Welcome to the league feed.</h1><p>Sign in with Google to post, react, reply, and share images.</p></div></div><form class="composer" id="message-form" aria-label="Message composer"><button type="button" id="upload-button" aria-label="Add image">＋</button><input id="message-input" autocomplete="off" placeholder="Sign in to send a message" disabled /><input id="media-input" type="file" accept="image/*" hidden /><button type="button" id="gif-button" aria-label="Add GIF">GIF</button><button type="submit" id="send-button" disabled>Send</button></form><div class="reply-banner" id="reply-banner" hidden></div></section>
           <aside class="member-rail"><p>LEAGUE MEMBERS</p><div id="member-list"></div></aside>
         </div>
       </section>
     </main>
 
-    <script src="/app.js?v=1"></script>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/app.js?v=3"></script>
   </body>
 </html>
