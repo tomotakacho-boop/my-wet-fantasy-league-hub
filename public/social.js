@@ -30,7 +30,8 @@
   }
 
   function reactionButtons(id, rows, kind) {
-    return EMOJIS.map(emoji => {
+    const visibleEmojis = [...new Set([...EMOJIS, ...rows.map(row => row.emoji)])];
+    return visibleEmojis.map(emoji => {
       const matches = rows.filter(row => row.emoji === emoji);
       if (!matches.length) return "";
       const mine = matches.some(row => row.user_id === user?.id);
@@ -83,11 +84,21 @@
   async function toggleMessageReaction(messageId, emoji) {
     if (!user) return toast("Sign in with Google to react.");
     const existing = messageReactions.find(row => row.message_id === messageId && row.user_id === user.id && row.emoji === emoji);
+    const previousReactions = messageReactions;
+    messageReactions = existing
+      ? messageReactions.filter(row => row !== existing)
+      : [...messageReactions, { message_id:messageId, user_id:user.id, emoji, display_name:displayName() }];
+    activeMessagePicker = null;
+    expandedMessagePicker = null;
+    renderMessages(messageRows, messageReactions);
     const result = existing
       ? await db.from("message_reactions").delete().eq("message_id", messageId).eq("user_id", user.id).eq("emoji", emoji)
       : await db.from("message_reactions").insert({ message_id:messageId, user_id:user.id, emoji, display_name:displayName() });
-    if (result.error) toast(result.error.message);
-    else { activeMessagePicker = null; expandedMessagePicker = null; await loadMessages(); }
+    if (result.error) {
+      messageReactions = previousReactions;
+      renderMessages(messageRows, messageReactions);
+      toast(result.error.message);
+    } else await loadMessages();
   }
 
   messageArea.addEventListener("click", async event => {
@@ -165,8 +176,11 @@
     if (reaction) {
       if (!user) return toast("Sign in with Google to react.");
       const key=reaction.dataset.rankingKey,emoji=reaction.dataset.powerReaction,existing=powerReactions.find(row=>row.ranking_key===key&&row.user_id===user.id&&row.emoji===emoji);
+      const previousReactions=powerReactions;
+      powerReactions=existing?powerReactions.filter(row=>row!==existing):[...powerReactions,{ranking_key:key,user_id:user.id,emoji,display_name:displayName()}];
+      activePowerPicker=null;expandedPowerPicker=null;renderRankings(rankingTeams);
       const result=existing?await db.from("power_ranking_reactions").delete().eq("id",existing.id):await db.from("power_ranking_reactions").insert({ranking_key:key,user_id:user.id,emoji,display_name:displayName()});
-      if(result.error)toast(result.error.message);else{activePowerPicker=null;expandedPowerPicker=null;await loadPowerActivity(true);}return;
+      if(result.error){powerReactions=previousReactions;renderRankings(rankingTeams);toast(result.error.message);}else await loadPowerActivity(true);return;
     }
     if (reply) { if(!user)return toast("Sign in with Google to reply.");const key=reply.dataset.powerReply;activePowerReply=activePowerReply===key?null:key;activePowerPicker=null;renderRankings(rankingTeams);document.querySelector(`[data-power-reply-form="${key}"] input`)?.focus();return; }
     if(event.target.closest("[data-close-power-picker]")){activePowerPicker=null;expandedPowerPicker=null;renderRankings(rankingTeams);}
