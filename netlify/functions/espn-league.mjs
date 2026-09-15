@@ -14,7 +14,7 @@ function matchupScore(side, week) {
 export const handler = async () => {
   const leagueId = process.env.ESPN_LEAGUE_ID || "64665002";
   const season = process.env.ESPN_SEASON || "2026";
-  const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/${leagueId}?view=mTeam&view=mRoster&view=mSettings&view=mMatchup`;
+  const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/${leagueId}?view=mTeam&view=mRoster&view=mSettings&view=mMatchup&view=mScoreboard`;
   try {
     const response = await fetch(url, { headers: { accept: "application/json" } });
     if (!response.ok) return { statusCode: response.status, body: JSON.stringify({ error: "ESPN league request failed" }) };
