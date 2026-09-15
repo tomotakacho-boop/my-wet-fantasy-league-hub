@@ -43,6 +43,7 @@
 
             <aside class="overview-side">
               <article class="panel prize-card"><p class="eyebrow">Prize pool</p><div class="prize-total">$2,100</div><div class="prize-line"><span>Champion</span><strong>$1,400</strong></div><div class="prize-line"><span>Runner-up</span><strong>$450</strong></div><div class="prize-line"><span>Third</span><strong>$250</strong></div></article>
+              <article class="panel slate-card" id="results-card" hidden><div class="panel-heading compact"><div><h2 id="results-heading">Week 1 results</h2></div><span class="quiet-chip">Final scores</span></div><div id="results-list"></div></article>
               <article class="panel slate-card"><div class="panel-heading compact"><div><h2>Week 1 matchups</h2></div><span class="quiet-chip">ESPN</span></div><div id="matchup-list"></div></article>
             </aside>
           </div>
@@ -57,24 +58,24 @@
 
       <section class="view" data-view-panel="power">
         <div class="page-shell power-shell">
-          <header class="power-hero"><span class="sample-label">WEEK 0 · PRESEASON</span><h1>Power rankings</h1><p>Rankings use ESPN’s projected score for each team’s best legal lineup. The ± figure shows expected week-to-week volatility.</p><div class="issue-stamp"><small>LEAGUE AVG</small><strong id="projected-league-average">—</strong><span>PROJECTED POINTS</span></div></header>
-          <div class="section-heading"><div><h2>Week 0 rankings</h2></div><span>Scores update when ESPN projections change.</span></div>
+          <header class="power-hero"><span class="sample-label" id="power-period">PRESEASON</span><h1>Power rankings</h1><p id="power-summary">Rankings use ESPN’s projected score for each team’s best legal lineup. The ± figure shows expected week-to-week volatility.</p><div class="issue-stamp"><small id="power-average-label">LEAGUE AVG</small><strong id="projected-league-average">—</strong><span id="power-average-unit">PROJECTED POINTS</span></div></header>
+          <div class="section-heading"><div><h2 id="power-section-heading">Preseason rankings</h2></div><span id="power-section-note">Scores update when ESPN projections change.</span></div>
           <div class="ranking-list" id="ranking-list"></div>
         </div>
       </section>
 
       <section class="view" data-view-panel="methods">
         <div class="page-shell methods-shell">
-          <div class="page-heading"><div><h1>Methodology</h1><p class="lede">Week 0 uses projected roster strength. Weekly performance is added after games are played.</p></div></div>
+          <div class="page-heading"><div><h1>Methodology</h1><p class="lede">Power rankings combine the next week’s forecast with the most recent completed week’s score.</p></div></div>
           <div class="method-grid">
-            <article class="panel method-card"><span>01</span><h2>55% · Starting lineup</h2><p>The highest projected legal Week 1 lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. This is the forecast’s primary input.</p></article>
+            <article class="panel method-card"><span>01</span><h2>55% · Starting lineup</h2><p>The highest projected legal next-week lineup: QB, RB, WR, TE, three FLEX, D/ST, and kicker. This is the forecast’s primary input.</p></article>
             <article class="panel method-card"><span>02</span><h2>25% · Star power</h2><p>The top three projected RB, WR, and TE players raise a team’s ceiling and receive more influence than interchangeable bench depth.</p></article>
             <article class="panel method-card"><span>03</span><h2>5% · Skill depth</h2><p>The best remaining RB, WR, and TE options provide a small durability adjustment without overstating bench value.</p></article>
             <article class="panel method-card"><span>04</span><h2>5% · Injury risk</h2><p>Questionable, doubtful, out, and injured-reserve designations reduce the projection according to the affected player’s expected role.</p></article>
             <article class="panel method-card"><span>05</span><h2>10% · Wild card</h2><p>Low-owned players with meaningful projections, injury-created opportunity, and high-upside stashes create a controlled upside adjustment.</p></article>
             <article class="panel method-card"><span>06</span><h2>Projected points ± volatility</h2><p>The raw optimized-lineup projection is the baseline. The other four factors make limited point adjustments around it—there is no preset league average or artificial score curve.</p></article>
           </div>
-          <p class="template-note">After every week, projected points will be compared with actual points. That forecast error will be used to recalibrate the model without changing the meaning of the published score.</p>
+          <p class="template-note">The power score is 70% next-week forecast and 30% points scored in the most recent completed week. The ± value measures forecast volatility, not the uncertainty of the blended score.</p>
         </div>
       </section>
 
@@ -90,9 +91,9 @@
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <div class="modal-backdrop" id="tool-modal" hidden><div class="tool-modal"><button class="modal-close" id="modal-close" type="button">×</button><p class="eyebrow" id="modal-kicker">TRADE BLOCK</p><h2 id="modal-title">Put a player on the block</h2><div id="modal-content"></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/app.js?v=5"></script>
-    <script src="/rankings-v2.js?v=1"></script>
+    <script src="/app.js?v=6"></script>
+    <script src="/rankings-v2.js?v=2"></script>
     <script src="/tools.js?v=4"></script>
-    <script src="/social.js?v=5"></script>
+    <script src="/social.js?v=6"></script>
   </body>
 </html>

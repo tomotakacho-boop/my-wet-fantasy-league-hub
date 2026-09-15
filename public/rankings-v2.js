@@ -32,18 +32,28 @@
       x.projected = .55 * x.lineup + .25 * starScenario + .05 * depthScenario + .05 * injuryScenario + .10 * wildcardScenario;
       x.projected = Math.max(0, x.projected);
       x.stdDev = Math.max(6, Math.min(22, x.rawSd * (x.projected / Math.max(x.lineup, 1)) + x.injuryRisk * .2));
+      x.recentScore = Number(x.team.recentScore || 0);
+      x.powerScore = league?.lastCompletedWeek && x.recentScore ? .7 * x.projected + .3 * x.recentScore : x.projected;
     });
-    return rows.sort((a, b) => b.projected - a.projected);
+    return rows.sort((a, b) => b.powerScore - a.powerScore);
   };
   renderRankings = teams => {
-    const ordered = rankings(teams), leagueAverage = average(ordered.map(x => x.projected)), averageEl = document.querySelector("#projected-league-average");
+    const ordered = rankings(teams), leagueAverage = average(ordered.map(x => x.powerScore)), averageEl = document.querySelector("#projected-league-average"), completed = league?.lastCompletedWeek || 0, next = league?.currentMatchupPeriod || 1;
     if (averageEl) averageEl.textContent = leagueAverage.toFixed(1);
+    document.querySelector("#power-period").textContent = completed ? `AFTER WEEK ${completed}` : "PRESEASON";
+    document.querySelector("#power-summary").textContent = completed ? `Power score blends the Week ${next} forecast (70%) with Week ${completed} points scored (30%). The ± figure shows forecast volatility.` : "Rankings use ESPN’s projected score for each team’s best legal lineup. The ± figure shows expected week-to-week volatility.";
+    document.querySelector("#power-section-heading").textContent = completed ? `Week ${completed} power rankings` : "Preseason rankings";
+    document.querySelector("#power-section-note").textContent = completed ? `Week ${completed} results and Week ${next} ESPN projections.` : "Scores update when ESPN projections change.";
+    document.querySelector("#power-average-label").textContent = completed ? "AVG POWER SCORE" : "LEAGUE AVG";
+    document.querySelector("#power-average-unit").textContent = completed ? "BLENDED POINTS" : "PROJECTED POINTS";
     document.querySelector("#ranking-list").innerHTML = ordered.map((x, i) => {
       const leaders = x.stars.map(p => p.fullName).join(", ") || "Projection data pending";
       const injury = x.injuryRisk > 1 ? ` Injury uncertainty removes about ${x.injuryRisk.toFixed(1)} raw lineup points.` : " The current starting group carries limited injury drag.";
       const wild = x.wildcard ? `${x.wildcard.fullName} is the model’s wildcard.` : "The wildcard slot is still open.";
       const tags = [`Lineup ${x.lineup.toFixed(1)}`, `Stars ${x.starPower.toFixed(1)}`, `Depth ${x.depth.toFixed(1)}`, `Injury risk −${x.injuryRisk.toFixed(1)}`, `Wildcard ${x.wildcardValue.toFixed(1)}`].map(v => `<span>${esc(v)}</span>`).join("");
-      return `<article class="ranking-card"><div class="rank-number">${i + 1}</div><div class="rank-copy"><small>0–0 · ${esc(x.team.owner)}</small><h3>${esc(x.team.name)}</h3><p><strong>${esc(leaders)}</strong> anchor a ${x.projected.toFixed(1)}-point Week 1 forecast.${esc(injury)} ${esc(wild)}</p><div class="player-tags factor-tags">${tags}</div></div><div class="rank-score"><strong>${x.projected.toFixed(1)}</strong><small>PROJECTED POINTS</small><em>± ${x.stdDev.toFixed(1)}</em><small>STD DEV</small></div></article>`;
+      const record = x.team.record || {wins:0,losses:0,ties:0}, scoreLabel = completed ? "POWER SCORE" : "PROJECTED POINTS";
+      const recap = completed ? `Week ${completed}: ${x.recentScore.toFixed(2)} points. Week ${next} forecast: ${x.projected.toFixed(1)} points.` : `Week ${next} forecast: ${x.projected.toFixed(1)} points.`;
+      return `<article class="ranking-card"><div class="rank-number">${i + 1}</div><div class="rank-copy"><small>${record.wins}–${record.losses}${record.ties?`–${record.ties}`:""} · ${esc(x.team.owner)}</small><h3>${esc(x.team.name)}</h3><p><strong>${esc(recap)}</strong> ${esc(leaders)} anchor the projected lineup.${esc(injury)} ${esc(wild)}</p><div class="player-tags factor-tags">${tags}</div></div><div class="rank-score"><strong>${x.powerScore.toFixed(1)}</strong><small>${scoreLabel}</small><em>± ${x.stdDev.toFixed(1)}</em><small>FORECAST STD DEV</small></div></article>`;
     }).join("");
   };
 })();
